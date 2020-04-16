@@ -54,7 +54,7 @@ public class PersonController {
             }
         }
         else{
-            personIPage = personMapper.selectPage(personPage,new QueryWrapper<Person>());
+            personIPage = personMapper.selectPage(personPage,new QueryWrapper<Person>().orderByAsc("personname"));
         }
         map.put("total", personIPage.getTotal());
         List<Person> personList= personIPage.getRecords();
@@ -85,12 +85,16 @@ public class PersonController {
         map.put("status", status);
         return map;
     }
+	/*
+		该排序为若按名字检索则根据年龄字典排序，若按年龄检索则
+		根据名字字典排序，进排序当前页
+	*/
     private List sortBySearchCondition(String searchcondition, List<Person> list) {
         List<Person> sortedList = new ArrayList<>();
-        if (searchcondition!=null&&searchcondition.equals("personname")){
+        if (searchcondition!=null&&searchcondition.equals("personage")){
             sortedList = list.stream().sorted((person1, person2) -> person1.getPersonname().compareTo(person2.getPersonname())).collect(toList());
         }
-        else if (searchcondition!=null&&searchcondition.equals("personage")){
+        else if (searchcondition!=null&&searchcondition.equals("personname")){
             sortedList = list.stream().sorted(Comparator.comparingInt(Person::getPersonage)).collect(toList());
         }
         return sortedList;
